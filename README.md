@@ -1,12 +1,17 @@
 # Custom Cook
 
+## Optional Prereqs:
+  On your computer:
+  * `sudo apt install postgresql-client-common`
+  * `sudo apt-get install postgresql-client`
+
 ## Setup  
   docker needs to be run as the root user. If you don't have root permissions - you need to give all these scripts admin/root permissions. (AKA: Use sudo for Ubuntu 16.04 as demonstrated below)  
   * `git clone git@github.com:aml2732/customcook.git`  
   * `sudo ./setup/setup.sh`  
 
 ## info
-  What currently exists is docker setting up an sqlite db to have 3 tables: `recipe`, `ingredients`, `tags`.  
+  What currently exists is docker setting up an postgresql docker container to have 3 tables: `recipe`, `ingredients`, `tags`.  
 
   **Recipe:**  
    * id - INT   
@@ -24,13 +29,14 @@
    * id - INT  
    * tag - varchar(50)  
 
-## Database actions within container
-  There is nothing keeping the customcook container up. So in the ./setup/setup.sh uncomment this line: `sudo docker run -p 7000:7000 -it --entrypoint=/bin/bash customcook` to make it start bash.  Upon running the script you'll be put into the container. Test out the database like so:  
-  * cd /home/chef/setup
-  * Type `sqlite3 customcookdb.db`
-  * You're now in an interactive CLI. Tye any of the following commands:
-    * `select * from recipe` : gets all the rows from the recipe table
-    * ....etc.
+## Verify Table creation worked
+  * `export PGPASSWORD=123`  
+  * `psql -h localhost -p 7000 -U postgres postgres` initdb simply puts everything in the default postgres database  
+     * This is saying: connect to the postgresql server at host localhost, port 7000, as the user postgres and database postgres  
+  * `\list`: lists databases  
+  * `\dt` : lists database tables  
+  * `SELECT * FROM recipe;` enter this into the psql interactive shell  
+  * `\q` : quits psql interactive mode  
 
 ## Cleanup  
   * `sudo ./setup/cleanup.sh`  

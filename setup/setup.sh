@@ -1,10 +1,9 @@
-echo "Creating docker image"
-sudo docker build -t customcook .
-echo "Does docker image exist?"
+cd setup/postgresql
 
-if [ -n "$(sudo docker images | grep customcook)" ]; then
-  echo "Customcook image was found"
-  sudo docker run -p 7000:7000 customcook
-  #sudo docker run -p 7000:7000 -it --entrypoint=/bin/bash customcook
-  #sudo docker run -p 7000:7000 -it -v .:/home/chef --entrypoint=/bin/bash customcook
+echo "Creating docker image"
+sudo docker build -t cookdb .
+
+echo "Does docker image exist?"
+if [ -n "$(sudo docker images | grep cookdb)" ]; then
+  sudo docker run -p 7000:5432 --name cookdb -e POSTGRES_PASSWORD=123 -d cookdb
 fi
